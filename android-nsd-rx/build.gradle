@@ -1,7 +1,9 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'org.jetbrains.dokka-android'
-apply plugin: 'jacoco'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'org.jetbrains.dokka-android'
+    id 'jacoco'
+}
 
 jacoco {
     toolVersion = '0.8.0'
@@ -18,11 +20,10 @@ repositories {
 }
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion = "27.0.3"
+    compileSdkVersion 30
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion 19
+        targetSdkVersion 30
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -47,15 +48,15 @@ android {
 dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 
-    def mockitoVersion = "2.7.22"
+    def mockitoVersion = "2.23.0"
     androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
-    implementation "com.android.support:support-annotations:27.1.1"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.1"
+    implementation "com.android.support:support-annotations:28.0.0"
 }
 
 dokka {
@@ -99,11 +100,11 @@ task jacocoUnitTestReport(type: JacocoReport, group: 'verification', dependsOn: 
     def debugTree = fileTree(dir: "$project.buildDir/intermediates/classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
 
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-    executionData = fileTree(dir: project.buildDir, includes: [
+    sourceDirectories.from(files([mainSrc]))
+    classDirectories.from(files([debugTree]))
+    executionData.from(fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
+    ]))
 }
 
 task jacocoFullTestReport(type: JacocoReport, group: 'verification', dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
@@ -116,11 +117,11 @@ task jacocoFullTestReport(type: JacocoReport, group: 'verification', dependsOn: 
     def debugTree = fileTree(dir: "$project.buildDir/intermediates/classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
 
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-    executionData = fileTree(dir: project.buildDir, includes: [
+    sourceDirectories.from(files([mainSrc]))
+    classDirectories.from(files([debugTree]))
+    executionData.from(fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
+    ]))
 }
 
 task copyAndroidCoverage(type: Copy) {
