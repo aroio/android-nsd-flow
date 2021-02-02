@@ -1,12 +1,9 @@
 package com.toxicbakery.application.nsd.rx
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,19 +19,21 @@ import io.reactivex.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
 
-    private val toggleButton: Button by bind(R.id.toggle)
-    private val statusTextView: TextView by bind(R.id.status)
-    private val recyclerView: RecyclerView by bind(R.id.recycler_view)
+    private lateinit var toggleButton: Button
+    private lateinit var statusTextView: TextView
+    private lateinit var recyclerView: RecyclerView
 
     private val nsdManagerRx: NsdManagerRx by lazy { NsdManagerRx(this) }
-    private val adapter: DiscoveryAdapter by lazy { DiscoveryAdapter() }
+    private val adapter: DiscoveryAdapter = DiscoveryAdapter()
     private var subscription: Disposable = Disposables.disposed()
-
-    private fun <T : View> Activity.bind(@IdRes id: Int) = lazy { findViewById<T>(id) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        toggleButton = findViewById(R.id.toggle)
+        statusTextView = findViewById(R.id.status)
+        recyclerView = findViewById(R.id.recycler_view)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
@@ -68,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                             Log.d(TAG, "Event $event")
                             when (event) {
                                 is DiscoveryServiceFound -> adapter.addItem(event.service.toDiscoveryRecord())
-                                is DiscoveryServiceLost -> adapter.removeItem(event.service.toDiscoveryRecord())
+                                is DiscoveryServiceLost  -> adapter.removeItem(event.service.toDiscoveryRecord())
                             }
                         },
                         { Log.e(TAG, "Error starting discovery.", it) })
