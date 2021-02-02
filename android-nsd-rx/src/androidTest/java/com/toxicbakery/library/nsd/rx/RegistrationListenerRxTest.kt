@@ -1,8 +1,8 @@
 package com.toxicbakery.library.nsd.rx
 
 import android.net.nsd.NsdServiceInfo
-import android.support.test.filters.SmallTest
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.filters.SmallTest
+import androidx.test.runner.AndroidJUnit4
 import com.toxicbakery.library.nsd.rx.registration.*
 import io.reactivex.ObservableEmitter
 import org.junit.Before
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 @SmallTest
 class RegistrationListenerRxTest {
 
-    private lateinit var nsdManagerCompat: INsdManagerCompat
+    private lateinit var nsdManagerCompat: NsdManagerCompat
     private lateinit var emitter: ObservableEmitter<RegistrationEvent>
     private lateinit var listener: RegistrationListenerRx
 

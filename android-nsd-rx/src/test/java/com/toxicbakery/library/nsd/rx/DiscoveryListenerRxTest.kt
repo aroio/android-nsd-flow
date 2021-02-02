@@ -8,7 +8,7 @@ import org.junit.Test
 
 class DiscoveryListenerRxTest {
 
-    private lateinit var nsdManagerCompat: INsdManagerCompat
+    private lateinit var nsdManagerCompat: NsdManagerCompat
     private lateinit var emitter: ObservableEmitter<DiscoveryEvent>
     private lateinit var binder: DiscoveryBinder
     private lateinit var listener: DiscoveryListenerRx

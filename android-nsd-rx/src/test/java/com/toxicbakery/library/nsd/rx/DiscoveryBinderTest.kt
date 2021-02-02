@@ -8,7 +8,7 @@ class DiscoveryBinderTest {
 
     @Test
     fun stop() {
-        val nsdManagerCompat: INsdManagerCompat = mock()
+        val nsdManagerCompat: NsdManagerCompat = mock()
         val listener: NsdManager.DiscoveryListener = mock()
         DiscoveryBinder(nsdManagerCompat, listener).stop()
         verify(nsdManagerCompat).stopServiceDiscovery(listener)

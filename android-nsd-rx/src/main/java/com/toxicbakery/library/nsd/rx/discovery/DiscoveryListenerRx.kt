@@ -4,11 +4,11 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import com.toxicbakery.library.nsd.rx.DiscoveryStartFailedException
 import com.toxicbakery.library.nsd.rx.DiscoveryStopFailedException
-import com.toxicbakery.library.nsd.rx.INsdManagerCompat
+import com.toxicbakery.library.nsd.rx.NsdManagerCompat
 import io.reactivex.ObservableEmitter
 
 internal data class DiscoveryListenerRx(
-        private val nsdManagerCompat: INsdManagerCompat,
+        private val nsdManagerCompat: NsdManagerCompat,
         private val emitter: ObservableEmitter<DiscoveryEvent>
 ) : NsdManager.DiscoveryListener {
 

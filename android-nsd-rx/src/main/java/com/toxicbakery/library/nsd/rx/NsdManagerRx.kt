@@ -14,17 +14,9 @@ import com.toxicbakery.library.nsd.rx.resolve.ResolveListenerRx
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 
-class NsdManagerRx {
+class NsdManagerRx(private val nsdManagerCompat: NsdManagerCompat) {
 
-    private val nsdManagerCompat: INsdManagerCompat
-
-    constructor(context: Context) {
-        this.nsdManagerCompat = NsdManagerCompat.fromContext(context)
-    }
-
-    constructor(nsdManagerCompat: INsdManagerCompat) {
-        this.nsdManagerCompat = nsdManagerCompat
-    }
+    constructor(context: Context) : this(NsdManagerCompatImpl.fromContext(context))
 
     fun discoverServices(discoveryConfiguration: DiscoveryConfiguration): Observable<DiscoveryEvent> =
             discoverServices(discoveryConfiguration) { nsdManagerCompat, emitter ->
@@ -33,7 +25,7 @@ class NsdManagerRx {
 
     fun discoverServices(
             discoveryConfiguration: DiscoveryConfiguration,
-            listenerFactory: (INsdManagerCompat, ObservableEmitter<DiscoveryEvent>) -> NsdManager.DiscoveryListener
+            listenerFactory: (NsdManagerCompat, ObservableEmitter<DiscoveryEvent>) -> NsdManager.DiscoveryListener
     ): Observable<DiscoveryEvent> = Observable.create<DiscoveryEvent> { emitter: ObservableEmitter<DiscoveryEvent> ->
         val listener = listenerFactory(nsdManagerCompat, emitter)
         emitter.setCancellable { nsdManagerCompat.stopServiceDiscovery(listener) }
@@ -51,7 +43,7 @@ class NsdManagerRx {
 
     fun registerService(
             registrationConfiguration: RegistrationConfiguration,
-            listenerFactory: (INsdManagerCompat, ObservableEmitter<RegistrationEvent>) -> NsdManager.RegistrationListener
+            listenerFactory: (NsdManagerCompat, ObservableEmitter<RegistrationEvent>) -> NsdManager.RegistrationListener
     ): Observable<RegistrationEvent> = Observable.create<RegistrationEvent> { emitter: ObservableEmitter<RegistrationEvent> ->
         val listener = listenerFactory(nsdManagerCompat, emitter)
         emitter.setCancellable { nsdManagerCompat.unregisterService(listener) }
@@ -70,7 +62,7 @@ class NsdManagerRx {
             serviceInfo: NsdServiceInfo,
             listenerFactory: (ObservableEmitter<ResolveEvent>) -> NsdManager.ResolveListener
     ): Observable<ResolveEvent> = Observable.create<ResolveEvent> { emitter: ObservableEmitter<ResolveEvent> ->
-                nsdManagerCompat.resolveService(serviceInfo, listenerFactory(emitter))
-            }
+        nsdManagerCompat.resolveService(serviceInfo, listenerFactory(emitter))
+    }
 
 }

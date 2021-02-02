@@ -1,16 +1,12 @@
-# Android Network Service Discovery Rx [![CircleCI](https://circleci.com/gh/ToxicBakery/Android-Nsd-Rx.svg?style=svg)](https://circleci.com/gh/ToxicBakery/Android-Nsd-Rx)
-An Rx wrapper around the Android [NsdManager](https://developer.android.com/reference/android/net/nsd/NsdManager.html) api.
-
-## Install
-```groovy
-implementation 'com.ToxicBakery.library.nsd.rx:android-nsd-rx:1.+'
-```
+# Android Network Service Discovery Flow
+A Flow wrapper around the Android [NsdManager](https://developer.android.com/reference/android/net/nsd/NsdManager.html) api.
+Based on [Android Network Service Discovery Rx](https://github.com/ToxicBakery/Android-Nsd-Rx)
 
 ## Creating a Manager
-The NsdManagerRx can be created with a context instance.
+The NsdManagerFlow can be created with a context instance.
 
 ```kotlin
-NsdManagerRx.fromContext(context)
+NsdManagerFlow.fromContext(context)
 ```
 
 ### Discovery

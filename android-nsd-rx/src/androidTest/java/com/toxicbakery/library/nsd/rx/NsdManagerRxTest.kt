@@ -1,9 +1,9 @@
 package com.toxicbakery.library.nsd.rx
 
 import android.net.nsd.NsdServiceInfo
-import android.support.test.InstrumentationRegistry
-import android.support.test.filters.SmallTest
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.InstrumentationRegistry
+import androidx.test.filters.SmallTest
+import androidx.test.runner.AndroidJUnit4
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryConfiguration
 import com.toxicbakery.library.nsd.rx.registration.RegistrationConfiguration
 import org.junit.After
@@ -16,7 +16,7 @@ import java.net.ServerSocket
 @SmallTest
 class NsdManagerRxTest {
 
-    private lateinit var nsdManagerCompat: INsdManagerCompat
+    private lateinit var nsdManagerCompat: NsdManagerCompat
     private lateinit var nsdManagerRx: NsdManagerRx
     private lateinit var registrationConfiguration: RegistrationConfiguration
     private lateinit var serverSocket: ServerSocket
@@ -48,7 +48,7 @@ class NsdManagerRxTest {
 
     @Test
     fun discoverServicesWithListener() {
-        nsdManagerRx.discoverServices(nsdConfiguration, { _, _ -> mock() })
+        nsdManagerRx.discoverServices(nsdConfiguration) { _, _ -> mock() }
                 .subscribe()
                 .dispose()
     }
@@ -62,7 +62,7 @@ class NsdManagerRxTest {
 
     @Test
     fun registerServiceWithListener() {
-        nsdManagerRx.registerService(registrationConfiguration, { _, _ -> mock() })
+        nsdManagerRx.registerService(registrationConfiguration) { _, _ -> mock() }
                 .subscribe()
                 .dispose()
     }
@@ -79,7 +79,7 @@ class NsdManagerRxTest {
     @Test
     fun resolveServiceWithListener() {
         NsdServiceInfo().let {
-            nsdManagerRx.resolveService(it, { mock() })
+            nsdManagerRx.resolveService(it) { mock() }
                     .subscribe()
                     .dispose()
         }
