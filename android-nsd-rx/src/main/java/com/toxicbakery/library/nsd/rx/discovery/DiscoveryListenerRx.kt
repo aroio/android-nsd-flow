@@ -15,7 +15,7 @@ internal data class DiscoveryListenerRx(
     private val binder: DiscoveryBinder by lazy { DiscoveryBinder(nsdManagerCompat, this) }
 
     override fun onServiceFound(serviceInfo: NsdServiceInfo) =
-            emitter.onNext(DiscoveryServiceFound(binder, serviceInfo))
+            emitter.onNext(DiscoveryEvent.DiscoveryServiceFound(binder, serviceInfo))
 
     override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) =
             emitter.onError(DiscoveryStopFailedException(serviceType, errorCode))
@@ -24,14 +24,14 @@ internal data class DiscoveryListenerRx(
             emitter.onError(DiscoveryStartFailedException(serviceType, errorCode))
 
     override fun onDiscoveryStarted(serviceType: String) =
-            emitter.onNext(DiscoveryStarted(serviceType))
+            emitter.onNext(DiscoveryEvent.DiscoveryStarted(serviceType))
 
     override fun onDiscoveryStopped(serviceType: String) {
-        emitter.onNext(DiscoveryStopped(serviceType))
+        emitter.onNext(DiscoveryEvent.DiscoveryStopped(serviceType))
         emitter.onComplete()
     }
 
     override fun onServiceLost(service: NsdServiceInfo) =
-            emitter.onNext(DiscoveryServiceLost(binder, service))
+            emitter.onNext(DiscoveryEvent.DiscoveryServiceLost(binder, service))
 
 }

@@ -5,7 +5,7 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryConfiguration
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryEvent
-import com.toxicbakery.library.nsd.rx.discovery.DiscoveryListenerRx
+import com.toxicbakery.library.nsd.rx.discovery.DiscoveryListenerFlow
 import com.toxicbakery.library.nsd.rx.registration.RegistrationConfiguration
 import com.toxicbakery.library.nsd.rx.registration.RegistrationEvent
 import com.toxicbakery.library.nsd.rx.registration.RegistrationListenerRx
@@ -13,15 +13,25 @@ import com.toxicbakery.library.nsd.rx.resolve.ResolveEvent
 import com.toxicbakery.library.nsd.rx.resolve.ResolveListenerRx
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
+@ExperimentalCoroutinesApi
 class NsdManagerRx(private val nsdManagerCompat: NsdManagerCompat) {
 
     constructor(context: Context) : this(NsdManagerCompatImpl.fromContext(context))
 
-    fun discoverServices(discoveryConfiguration: DiscoveryConfiguration): Observable<DiscoveryEvent> =
-            discoverServices(discoveryConfiguration) { nsdManagerCompat, emitter ->
-                DiscoveryListenerRx(nsdManagerCompat, emitter)
-            }
+    fun discoverServices(discoveryConfiguration: DiscoveryConfiguration): Flow<DiscoveryEvent> = callbackFlow {
+        val discoveryListener = DiscoveryListenerFlow(this)
+        nsdManagerCompat.discoverServices(
+                serviceType = discoveryConfiguration.type,
+                protocolType = discoveryConfiguration.protocolType,
+                listener = discoveryListener,
+        )
+        awaitClose { nsdManagerCompat.stopServiceDiscovery(discoveryListener) }
+    }
 
     fun discoverServices(
             discoveryConfiguration: DiscoveryConfiguration,

@@ -2,18 +2,17 @@ package com.toxicbakery.library.nsd.rx
 
 import android.net.nsd.NsdServiceInfo
 import androidx.test.InstrumentationRegistry
-import androidx.test.filters.SmallTest
-import androidx.test.runner.AndroidJUnit4
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryConfiguration
 import com.toxicbakery.library.nsd.rx.registration.RegistrationConfiguration
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.net.ServerSocket
 
-@RunWith(AndroidJUnit4::class)
-@SmallTest
+@ExperimentalCoroutinesApi
 class NsdManagerRxTest {
 
     private lateinit var nsdManagerCompat: NsdManagerCompat
@@ -41,10 +40,9 @@ class NsdManagerRxTest {
     }
 
     @Test
-    fun discoverServices() =
-            nsdManagerRx.discoverServices(nsdConfiguration)
-                    .subscribe()
-                    .dispose()
+    fun discoverServices(): Unit = runBlocking {
+        nsdManagerRx.discoverServices(nsdConfiguration).first()
+    }
 
     @Test
     fun discoverServicesWithListener() {
