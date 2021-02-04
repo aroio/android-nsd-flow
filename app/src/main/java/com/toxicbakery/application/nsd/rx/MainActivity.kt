@@ -7,15 +7,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.toxicbakery.library.nsd.rx.NsdManagerRx
+import com.toxicbakery.library.nsd.rx.NsdManagerFlow
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryConfiguration
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryEvent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,9 +20,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusTextView: TextView
     private lateinit var recyclerView: RecyclerView
 
-    private val nsdManagerRx: NsdManagerRx by lazy { NsdManagerRx(this) }
+    private val nsdManagerFlow: NsdManagerFlow by lazy { NsdManagerFlow(this) }
     private val adapter: DiscoveryAdapter = DiscoveryAdapter()
-    private var subscription: Job = Job()
+    private var job: Job = Job().apply { cancel() }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,21 +46,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        statusTextView.setText(
-                if (subscription.isActive) R.string.activity_main_status_discovery_on
-                else R.string.activity_main_status_discovery_off)
+        when {
+            job.isActive -> R.string.activity_main_status_discovery_on
+            else -> R.string.activity_main_status_discovery_off
+        }.also { statusTextView.setText(it) }
     }
 
     private fun toggle() {
-        if (subscription.isActive) stopDiscovery()
+        if (job.isActive) stopDiscovery()
         else startDiscovery()
     }
 
     private fun startDiscovery() {
-        subscription = CoroutineScope(Dispatchers.Main).launch {
-            nsdManagerRx.discoverServices(DiscoveryConfiguration("_services._dns-sd._udp"))
-                    .flowOn(Dispatchers.IO)
-                    .collect { event ->
+        job = CoroutineScope(Dispatchers.IO).launch {
+            nsdManagerFlow.discoverServices(DiscoveryConfiguration("_services._dns-sd._udp"))
+                    .catch { Log.e(TAG, "Error happened", it) }
+                    .collectLatest { event ->
                         Log.d(TAG, "Event $event")
                         when (event) {
                             is DiscoveryEvent.DiscoveryServiceFound -> adapter.addItem(event.service.toDiscoveryRecord())
@@ -75,9 +74,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stopDiscovery() {
-        subscription.cancel()
-        updateUI()
+        job.cancel()
         adapter.clear()
+        updateUI()
     }
 
     companion object {

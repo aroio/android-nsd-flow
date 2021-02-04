@@ -10,11 +10,14 @@ import com.toxicbakery.library.nsd.rx.registration.RegistrationEvent
 import com.toxicbakery.library.nsd.rx.registration.RegistrationListenerFlow
 import com.toxicbakery.library.nsd.rx.resolve.ResolveEvent
 import com.toxicbakery.library.nsd.rx.resolve.ResolveListenerFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.internal.ChannelFlow
+import kotlinx.coroutines.withContext
 
-class NsdManagerRx(private val nsdManagerCompat: NsdManagerCompat) {
+class NsdManagerFlow(private val nsdManagerCompat: NsdManagerCompat) {
 
     constructor(context: Context) : this(NsdManagerCompatImpl.fromContext(context))
 

@@ -17,10 +17,10 @@ import org.junit.Test
 import java.net.ServerSocket
 
 @ExperimentalCoroutinesApi
-class NsdManagerRxTest {
+class NsdManagerFlowTest {
 
     private lateinit var nsdManagerCompat: NsdManagerCompat
-    private lateinit var nsdManagerRx: NsdManagerRx
+    private lateinit var nsdManagerFlow: NsdManagerFlow
     private lateinit var registrationConfiguration: RegistrationConfiguration
     private lateinit var serverSocket: ServerSocket
     private val nsdConfiguration = DiscoveryConfiguration("_http._tcp.")
@@ -32,7 +32,7 @@ class NsdManagerRxTest {
         serverSocket = ServerSocket(0)
         registrationConfiguration = RegistrationConfiguration(port = serverSocket.localPort)
         nsdManagerCompat = mock()
-        nsdManagerRx = NsdManagerRx(nsdManagerCompat)
+        nsdManagerFlow = NsdManagerFlow(nsdManagerCompat)
     }
 
     @After
@@ -44,22 +44,22 @@ class NsdManagerRxTest {
 
     @Test
     fun secondConstructor() {
-        NsdManagerRx(InstrumentationRegistry.getInstrumentation().targetContext)
+        NsdManagerFlow(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @Test
     fun discoverServices() = testCoroutineDispatcher.runBlockingTest {
-        nsdManagerRx.discoverServices(nsdConfiguration).first()
+        nsdManagerFlow.discoverServices(nsdConfiguration).first()
     }
 
     @Test
     fun registerService() = testCoroutineDispatcher.runBlockingTest {
-        nsdManagerRx.registerService(registrationConfiguration).first()
+        nsdManagerFlow.registerService(registrationConfiguration).first()
     }
 
     @Test
     fun resolveService() = testCoroutineDispatcher.runBlockingTest {
-        nsdManagerRx.resolveService(NsdServiceInfo()).first()
+        nsdManagerFlow.resolveService(NsdServiceInfo()).first()
     }
 
 }
