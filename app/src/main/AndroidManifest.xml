@@ -4,7 +4,6 @@
     package="com.toxicbakery.application.nsd.rx">
 
     <!-- Requirement for firebase cloud testing to write jacoco to the sdcard on test devices -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
