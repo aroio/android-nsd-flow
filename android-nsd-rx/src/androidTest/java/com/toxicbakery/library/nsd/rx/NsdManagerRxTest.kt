@@ -1,12 +1,16 @@
 package com.toxicbakery.library.nsd.rx
 
 import android.net.nsd.NsdServiceInfo
-import androidx.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryConfiguration
 import com.toxicbakery.library.nsd.rx.registration.RegistrationConfiguration
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -20,9 +24,11 @@ class NsdManagerRxTest {
     private lateinit var registrationConfiguration: RegistrationConfiguration
     private lateinit var serverSocket: ServerSocket
     private val nsdConfiguration = DiscoveryConfiguration("_http._tcp.")
+    private val testCoroutineDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 
     @Before
     fun setup() {
+        Dispatchers.setMain(testCoroutineDispatcher)
         serverSocket = ServerSocket(0)
         registrationConfiguration = RegistrationConfiguration(port = serverSocket.localPort)
         nsdManagerCompat = mock()
@@ -32,55 +38,28 @@ class NsdManagerRxTest {
     @After
     fun teardown() {
         serverSocket.close()
+        Dispatchers.resetMain()
+        testCoroutineDispatcher.cleanupTestCoroutines()
     }
 
     @Test
     fun secondConstructor() {
-        NsdManagerRx(InstrumentationRegistry.getTargetContext())
+        NsdManagerRx(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @Test
-    fun discoverServices(): Unit = runBlocking {
+    fun discoverServices() = testCoroutineDispatcher.runBlockingTest {
         nsdManagerRx.discoverServices(nsdConfiguration).first()
     }
 
     @Test
-    fun discoverServicesWithListener() {
-        nsdManagerRx.discoverServices(nsdConfiguration) { _, _ -> mock() }
-                .subscribe()
-                .dispose()
+    fun registerService() = testCoroutineDispatcher.runBlockingTest {
+        nsdManagerRx.registerService(registrationConfiguration).first()
     }
 
     @Test
-    fun registerService() {
-        nsdManagerRx.registerService(registrationConfiguration)
-                .subscribe()
-                .dispose()
-    }
-
-    @Test
-    fun registerServiceWithListener() {
-        nsdManagerRx.registerService(registrationConfiguration) { _, _ -> mock() }
-                .subscribe()
-                .dispose()
-    }
-
-    @Test
-    fun resolveService() {
-        NsdServiceInfo().let {
-            nsdManagerRx.resolveService(it)
-                    .subscribe()
-                    .dispose()
-        }
-    }
-
-    @Test
-    fun resolveServiceWithListener() {
-        NsdServiceInfo().let {
-            nsdManagerRx.resolveService(it) { mock() }
-                    .subscribe()
-                    .dispose()
-        }
+    fun resolveService() = testCoroutineDispatcher.runBlockingTest {
+        nsdManagerRx.resolveService(NsdServiceInfo()).first()
     }
 
 }
