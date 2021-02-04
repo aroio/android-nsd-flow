@@ -30,7 +30,7 @@ internal data class DiscoveryListenerFlow(
 
     override fun onDiscoveryStopped(serviceType: String) {
         producerScope.offer(DiscoveryEvent.DiscoveryStopped(serviceType = serviceType))
-        producerScope.cancel(null)
+        producerScope.cancel()
     }
 
     override fun onServiceLost(service: NsdServiceInfo) {
