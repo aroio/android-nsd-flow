@@ -9,6 +9,7 @@ import com.toxicbakery.library.nsd.rx.registration.RegistrationConfiguration
 import com.toxicbakery.library.nsd.rx.registration.RegistrationEvent
 import com.toxicbakery.library.nsd.rx.registration.RegistrationListenerFlow
 import com.toxicbakery.library.nsd.rx.resolve.ResolveEvent
+import com.toxicbakery.library.nsd.rx.resolve.ResolveListenerFlow
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -42,7 +43,8 @@ class NsdManagerRx(private val nsdManagerCompat: NsdManagerCompat) {
     }
 
     fun resolveService(serviceInfo: NsdServiceInfo): Flow<ResolveEvent> = callbackFlow {
-
+        val resolveListener = ResolveListenerFlow(this)
+        nsdManagerCompat.resolveService(serviceInfo = serviceInfo, listener = resolveListener)
         awaitClose()
     }
 

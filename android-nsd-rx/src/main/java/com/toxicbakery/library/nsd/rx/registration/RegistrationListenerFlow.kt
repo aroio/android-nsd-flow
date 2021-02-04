@@ -6,7 +6,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ProducerScope
 import java.util.concurrent.CancellationException
 
-class RegistrationListenerFlow(
+internal class RegistrationListenerFlow(
         private val producerScope: ProducerScope<RegistrationEvent>
 ) : NsdManager.RegistrationListener {
     override fun onRegistrationFailed(nsdServiceInfo: NsdServiceInfo, errorCode: Int) {
