@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun startDiscovery() {
         subscription = CoroutineScope(Dispatchers.Main).launch {
             nsdManagerRx.discoverServices(DiscoveryConfiguration("_services._dns-sd._udp"))
+                    .flowOn(Dispatchers.IO)
                     .collect { event ->
                         Log.d(TAG, "Event $event")
                         when (event) {
