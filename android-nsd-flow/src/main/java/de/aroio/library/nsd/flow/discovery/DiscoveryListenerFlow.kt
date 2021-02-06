@@ -2,6 +2,8 @@ package de.aroio.library.nsd.flow.discovery
 
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import de.aroio.library.nsd.flow.DiscoveryStartFailed
+import de.aroio.library.nsd.flow.DiscoveryStopFailed
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.sendBlocking
@@ -16,11 +18,11 @@ internal data class DiscoveryListenerFlow(
     }
 
     override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-        producerScope.channel.close()
+        producerScope.channel.close(DiscoveryStopFailed(serviceType, errorCode))
     }
 
     override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-        producerScope.channel.close()
+        producerScope.channel.close(DiscoveryStartFailed(serviceType, errorCode))
     }
 
     override fun onDiscoveryStarted(serviceType: String) {
