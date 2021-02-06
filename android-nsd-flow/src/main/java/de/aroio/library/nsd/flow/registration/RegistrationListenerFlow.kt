@@ -2,20 +2,20 @@ package de.aroio.library.nsd.flow.registration
 
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import kotlinx.coroutines.cancel
+import de.aroio.library.nsd.flow.RegistrationFailed
+import de.aroio.library.nsd.flow.UnregistrationFailed
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.sendBlocking
-import java.util.concurrent.CancellationException
 
 internal class RegistrationListenerFlow(
         private val producerScope: ProducerScope<RegistrationEvent>
 ) : NsdManager.RegistrationListener {
     override fun onRegistrationFailed(nsdServiceInfo: NsdServiceInfo, errorCode: Int) {
-        producerScope.channel.close()
+        producerScope.channel.close(RegistrationFailed(nsdServiceInfo, errorCode))
     }
 
     override fun onUnregistrationFailed(nsdServiceInfo: NsdServiceInfo, errorCode: Int) {
-        producerScope.channel.close()
+        producerScope.channel.close(UnregistrationFailed(nsdServiceInfo, errorCode))
     }
 
     override fun onServiceRegistered(nsdServiceInfo: NsdServiceInfo) {
