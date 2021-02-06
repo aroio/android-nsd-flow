@@ -14,8 +14,10 @@ import de.aroio.library.nsd.flow.discovery.DiscoveryEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -65,11 +67,13 @@ class MainActivity : AppCompatActivity() {
         job = CoroutineScope(Dispatchers.Main).launch {
             nsdManagerFlow.discoverServices(DiscoveryConfiguration("_services._dns-sd._udp"))
                     .flowOn(Dispatchers.IO)
+                    .onCompletion { Log.d(TAG, "Completion caused by $it") }
                     .collect { event ->
-                        Log.d(TAG, "Event $event")
                         when (event) {
                             is DiscoveryEvent.DiscoveryServiceFound -> adapter.addItem(event.service.toDiscoveryRecord())
                             is DiscoveryEvent.DiscoveryServiceLost -> adapter.removeItem(event.service.toDiscoveryRecord())
+                            is DiscoveryEvent.DiscoveryStarted -> Log.d(TAG, "DiscoveryStarted event: $event")
+                            is DiscoveryEvent.DiscoveryStopped -> Log.d(TAG, "DiscoveryStopped event: $event")
                         }
                     }
         }
