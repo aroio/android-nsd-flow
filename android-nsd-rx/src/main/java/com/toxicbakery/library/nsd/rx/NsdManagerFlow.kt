@@ -12,6 +12,7 @@ import com.toxicbakery.library.nsd.rx.resolve.ResolveEvent
 import com.toxicbakery.library.nsd.rx.resolve.ResolveListenerFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.internal.ChannelFlow
@@ -28,7 +29,7 @@ class NsdManagerFlow(private val nsdManagerCompat: NsdManagerCompat) {
                 protocolType = discoveryConfiguration.protocolType,
                 listener = discoveryListener,
         )
-        awaitClose { nsdManagerCompat.stopServiceDiscovery(discoveryListener) }
+        awaitClose()
     }
 
     fun registerService(registrationConfiguration: RegistrationConfiguration): Flow<RegistrationEvent> = callbackFlow {
@@ -42,7 +43,7 @@ class NsdManagerFlow(private val nsdManagerCompat: NsdManagerCompat) {
                 protocolType = registrationConfiguration.protocolType,
                 listener = registrationListener
         )
-        awaitClose { nsdManagerCompat.unregisterService(registrationListener) }
+        awaitClose()
     }
 
     fun resolveService(serviceInfo: NsdServiceInfo): Flow<ResolveEvent> = callbackFlow {
