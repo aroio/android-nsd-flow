@@ -2,10 +2,10 @@ package com.toxicbakery.library.nsd.rx.discovery
 
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import com.toxicbakery.library.nsd.rx.NsdManagerCompat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ProducerScope
-import java.util.concurrent.CancellationException
+import kotlinx.coroutines.channels.sendBlocking
 
 @ExperimentalCoroutinesApi
 internal data class DiscoveryListenerFlow(
@@ -13,28 +13,28 @@ internal data class DiscoveryListenerFlow(
 ) : NsdManager.DiscoveryListener {
 
     override fun onServiceFound(serviceInfo: NsdServiceInfo) {
-        producerScope.offer(DiscoveryEvent.DiscoveryServiceFound(service = serviceInfo))
+        producerScope.sendBlocking(DiscoveryEvent.DiscoveryServiceFound(service = serviceInfo))
     }
 
     override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-        producerScope.cancel(CancellationException("Stop discovery failed"))
+        producerScope.channel.close()
     }
 
     override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-        producerScope.cancel(CancellationException("StartDiscovery failed"))
+        producerScope.channel.close()
     }
 
     override fun onDiscoveryStarted(serviceType: String) {
-        producerScope.offer(DiscoveryEvent.DiscoveryStarted(registeredType = serviceType))
+        producerScope.sendBlocking(DiscoveryEvent.DiscoveryStarted(registeredType = serviceType))
     }
 
     override fun onDiscoveryStopped(serviceType: String) {
-        producerScope.offer(DiscoveryEvent.DiscoveryStopped(serviceType = serviceType))
-        producerScope.cancel()
+        producerScope.sendBlocking(DiscoveryEvent.DiscoveryStopped(serviceType = serviceType))
+        producerScope.channel.close()
     }
 
     override fun onServiceLost(service: NsdServiceInfo) {
-        producerScope.offer(DiscoveryEvent.DiscoveryServiceLost(service = service))
+        producerScope.sendBlocking(DiscoveryEvent.DiscoveryServiceLost(service = service))
     }
 
 }
