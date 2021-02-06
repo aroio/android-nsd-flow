@@ -5,25 +5,14 @@ import android.net.nsd.NsdServiceInfo
 
 interface NsdManagerCompat {
 
-    fun registerService(
-            serviceInfo: NsdServiceInfo,
-            protocolType: Int,
-            listener: NsdManager.RegistrationListener
-    )
+    fun registerService(serviceInfo: NsdServiceInfo, protocolType: Int, listener: NsdManager.RegistrationListener)
 
     fun unregisterService(listener: NsdManager.RegistrationListener)
 
-    fun discoverServices(
-            serviceType: String,
-            protocolType: Int,
-            listener: NsdManager.DiscoveryListener
-    )
+    fun discoverServices(serviceType: String, protocolType: Int, listener: NsdManager.DiscoveryListener)
 
     fun stopServiceDiscovery(listener: NsdManager.DiscoveryListener)
 
-    fun resolveService(
-            serviceInfo: NsdServiceInfo,
-            listener: NsdManager.ResolveListener
-    )
+    fun resolveService(serviceInfo: NsdServiceInfo, listener: NsdManager.ResolveListener)
 
 }
