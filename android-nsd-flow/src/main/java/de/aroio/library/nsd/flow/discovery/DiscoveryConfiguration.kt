@@ -5,5 +5,6 @@ import de.aroio.library.nsd.flow.ProtocolType
 
 data class DiscoveryConfiguration(
         val type: String,
-        @ProtocolType val protocolType: Int = NsdManager.PROTOCOL_DNS_SD
+        @ProtocolType
+        val protocolType: Int = NsdManager.PROTOCOL_DNS_SD
 )
