@@ -10,9 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.toxicbakery.library.nsd.rx.NsdManagerFlow
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryConfiguration
 import com.toxicbakery.library.nsd.rx.discovery.DiscoveryEvent
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,10 +62,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startDiscovery() {
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.Main).launch {
             nsdManagerFlow.discoverServices(DiscoveryConfiguration("_services._dns-sd._udp"))
-                    .catch { Log.e(TAG, "Error happened", it) }
-                    .collectLatest { event ->
+                    .flowOn(Dispatchers.IO)
+                    .collect { event ->
                         Log.d(TAG, "Event $event")
                         when (event) {
                             is DiscoveryEvent.DiscoveryServiceFound -> adapter.addItem(event.service.toDiscoveryRecord())
