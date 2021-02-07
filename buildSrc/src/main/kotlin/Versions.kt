@@ -16,4 +16,8 @@ object Versions {
         const val annotation: String = "1.1.0"
     }
 
+    object Mockk {
+        const val core: String = "1.10.5"
+    }
+
 }

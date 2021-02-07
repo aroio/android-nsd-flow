@@ -17,4 +17,8 @@ object Dependencies {
     object JUnit {
         const val jupiter = "org.junit.jupiter:junit-jupiter:${Versions.JUnit.jupiter}"
     }
+
+    object Mockk {
+        const val core = "io.mockk:mockk:${Versions.Mockk.core}"
+    }
 }

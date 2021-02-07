@@ -25,15 +25,7 @@ android {
             )
         }
     }
-    sourceSets {
-        getByName("test") {
-            java.srcDir("src/sharedTest/java")
-        }
-        getByName("androidTest") {
-            java.srcDir("src/sharedTest/java")
-        }
-    }
-
+    
     packagingOptions {
         exclude("META-INF/AL2.0")
         exclude("META-INF/LGPL2.1")
@@ -51,7 +43,9 @@ dependencies {
 
     testImplementation(Dependencies.JUnit.jupiter)
     testImplementation(Dependencies.Kotlin.Coroutines.test)
+    testImplementation(Dependencies.Mockk.core)
 
+    androidTestImplementation(Dependencies.Mockk.core)
     androidTestImplementation(Dependencies.Kotlin.Coroutines.test)
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
 }

@@ -21,17 +21,15 @@ class NsdManagerFlow(private val nsdManagerCompat: NsdManagerCompat) {
     constructor(context: Context) : this(NsdManagerCompatImpl.fromContext(context))
 
     fun discoverServices(discoveryConfiguration: DiscoveryConfiguration): Flow<DiscoveryEvent> = callbackFlow {
-        val discoveryListener = DiscoveryListenerFlow(this)
         nsdManagerCompat.discoverServices(
                 serviceType = discoveryConfiguration.type,
                 protocolType = discoveryConfiguration.protocolType,
-                listener = discoveryListener,
+                listener = DiscoveryListenerFlow(this),
         )
         awaitClose()
     }
 
     fun registerService(registrationConfiguration: RegistrationConfiguration): Flow<RegistrationEvent> = callbackFlow {
-        val registrationListener = RegistrationListenerFlow(this)
         nsdManagerCompat.registerService(
                 serviceInfo = NsdServiceInfo().apply {
                     serviceName = registrationConfiguration.serviceName
@@ -39,14 +37,16 @@ class NsdManagerFlow(private val nsdManagerCompat: NsdManagerCompat) {
                     serviceType = registrationConfiguration.serviceType
                 },
                 protocolType = registrationConfiguration.protocolType,
-                listener = registrationListener
+                listener = RegistrationListenerFlow(this)
         )
         awaitClose()
     }
 
     fun resolveService(serviceInfo: NsdServiceInfo): Flow<ResolveEvent> = callbackFlow {
-        val resolveListener = ResolveListenerFlow(this)
-        nsdManagerCompat.resolveService(serviceInfo = serviceInfo, listener = resolveListener)
+        nsdManagerCompat.resolveService(
+                serviceInfo = serviceInfo,
+                listener = ResolveListenerFlow(this)
+        )
         awaitClose()
     }
 
