@@ -1,4 +1,4 @@
-package de.aroio.application.nsd.rx
+package de.aroio.application.nsd.flow
 
 import android.os.Bundle
 import android.util.Log
@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import de.aroio.application.nsd.flow.R
 import de.aroio.library.nsd.flow.NsdManagerFlow
 import de.aroio.library.nsd.flow.discovery.DiscoveryConfiguration
 import de.aroio.library.nsd.flow.discovery.DiscoveryEvent

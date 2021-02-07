@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,MissingApplicationIcon">
         <activity
-            android:name="de.aroio.application.nsd.rx.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/activity_main_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

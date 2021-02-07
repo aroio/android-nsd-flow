@@ -1,4 +1,4 @@
-package de.aroio.application.nsd.rx
+package de.aroio.application.nsd.flow
 
 import android.net.nsd.NsdServiceInfo
 import android.view.LayoutInflater
