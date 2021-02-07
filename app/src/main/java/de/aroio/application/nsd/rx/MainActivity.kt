@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
                             is DiscoveryEvent.DiscoveryStopped -> Log.d(TAG, "DiscoveryStopped event: $event")
                         }
                     }
-
         }
 
         updateUI()
