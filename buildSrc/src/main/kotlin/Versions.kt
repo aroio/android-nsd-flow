@@ -8,4 +8,12 @@ object Versions {
         }
     }
 
+    object JUnit {
+        const val jupiter = "5.7.0"
+    }
+
+    object Android {
+        const val annotation: String = "1.1.0"
+    }
+
 }

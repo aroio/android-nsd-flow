@@ -1,13 +1,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    id("org.jetbrains.dokka-android")
-}
-
-repositories {
-    google()
-    jcenter()
-    mavenCentral()
 }
 
 android {
@@ -54,13 +47,11 @@ android {
 dependencies {
     implementation(Dependencies.Kotlin.std)
     implementation(Dependencies.Kotlin.Coroutines.core)
-    implementation("androidx.annotation:annotation:1.1.0")
+    implementation(Dependencies.Android.annotation)
 
-    testImplementation("org.mockito:mockito-core:2.28.2")
-    testImplementation("junit:junit:4.13.1")
+    testImplementation(Dependencies.JUnit.jupiter)
     testImplementation(Dependencies.Kotlin.Coroutines.test)
 
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2")
+    androidTestImplementation(Dependencies.Kotlin.Coroutines.test)
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation("org.mockito:mockito-android:2.28.2")
 }
