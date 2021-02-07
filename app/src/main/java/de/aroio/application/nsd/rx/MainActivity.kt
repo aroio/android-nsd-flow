@@ -7,14 +7,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.toxicbakery.application.nsd.rx.R
+import de.aroio.application.nsd.flow.R
 import de.aroio.library.nsd.flow.NsdManagerFlow
 import de.aroio.library.nsd.flow.discovery.DiscoveryConfiguration
 import de.aroio.library.nsd.flow.discovery.DiscoveryEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusTextView: TextView
     private lateinit var recyclerView: RecyclerView
 
-    private val nsdManagerFlow: NsdManagerFlow by lazy { NsdManagerFlow(this) }
+    private val nsdManagerFlow: NsdManagerFlow by lazy { NsdManagerFlow(applicationContext) }
     private val adapter: DiscoveryAdapter = DiscoveryAdapter()
     private var job: Job = Job().apply { cancel() }
 
@@ -59,8 +58,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toggle() {
-        if (job.isActive) stopDiscovery()
-        else startDiscovery()
+        if (job.isActive) stopDiscovery() else startDiscovery()
     }
 
     private fun startDiscovery() {
@@ -76,6 +74,7 @@ class MainActivity : AppCompatActivity() {
                             is DiscoveryEvent.DiscoveryStopped -> Log.d(TAG, "DiscoveryStopped event: $event")
                         }
                     }
+
         }
 
         updateUI()

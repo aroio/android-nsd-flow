@@ -11,7 +11,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion = "30.0.2"
     defaultConfig {
-        applicationId "com.toxicbakery.application.nsd.rx"
+        applicationId "de.aroro.application.nsd.flow"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
