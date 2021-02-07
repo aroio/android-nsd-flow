@@ -10,10 +10,12 @@ import de.aroio.library.nsd.flow.registration.RegistrationEvent
 import de.aroio.library.nsd.flow.registration.RegistrationListenerFlow
 import de.aroio.library.nsd.flow.resolve.ResolveEvent
 import de.aroio.library.nsd.flow.resolve.ResolveListenerFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
+@ExperimentalCoroutinesApi
 class NsdManagerFlow(private val nsdManagerCompat: NsdManagerCompat) {
 
     constructor(context: Context) : this(NsdManagerCompatImpl.fromContext(context))
