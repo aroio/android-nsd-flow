@@ -1,7 +1,10 @@
 plugins {
+    `maven-publish`
     id("com.android.library")
     kotlin("android")
 }
+
+group = "com.github.aroio.nsd_flow"
 
 android {
     setCompileSdkVersion(30)
