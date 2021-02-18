@@ -4,7 +4,7 @@ plugins {
     kotlin("android")
 }
 
-group = "com.github.aroio.nsd_flow"
+group = "com.github.aroio.nsd-flow"
 
 android {
     setCompileSdkVersion(30)
@@ -28,7 +28,7 @@ android {
             )
         }
     }
-    
+
     packagingOptions {
         exclude("META-INF/AL2.0")
         exclude("META-INF/LGPL2.1")
@@ -51,4 +51,16 @@ dependencies {
     androidTestImplementation(Dependencies.Mockk.core)
     androidTestImplementation(Dependencies.Kotlin.Coroutines.test)
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = "com.github.aroio"
+                artifactId = "nsd-flow"
+                version = "0.1.0"
+            }
+        }
+    }
 }
