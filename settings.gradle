@@ -1,2 +1,2 @@
 include ':android-nsd-flow'
-include ':app'
+include ':sample'
