@@ -4,7 +4,7 @@ plugins {
     kotlin("android")
 }
 
-group = "com.github.aroio.nsd-flow"
+group = "com.github.aroio"
 
 android {
     setCompileSdkVersion(30)
